@@ -1,0 +1,55 @@
+---
+description: Conventions React, Next.js et TailwindCSS pour NutriSport
+globs: **/*.tsx, **/*.ts
+alwaysApply: false
+---
+
+# React / Next.js / Tailwind — Standards NutriSport
+
+## Composants
+
+- Utiliser uniquement des **composants fonctionnels**
+- Nommer les fichiers en `PascalCase` (`WeekPlanning.tsx`)
+- Extraire la logique réutilisable dans des hooks custom (`hooks/usePlanning.ts`)
+- Coloquer les composants proches de leur usage (dossier `components/`)
+
+## TypeScript
+
+- Toujours typer explicitement les props avec une `interface` nommée
+- Préfixer les interfaces de props par le nom du composant : `WeekPlanningProps`
+- Éviter `any` — utiliser les types du domaine définis dans `types/`
+
+```typescript
+// ✅ BON
+interface DayCardProps {
+  date: string;
+  role: UserRole;
+  dayData: DayData;
+}
+
+// ❌ MAUVAIS
+const DayCard = ({ date, role, dayData }: any) => { ... }
+```
+
+## TailwindCSS
+
+- **Mobile-first** : toujours partir du mobile, puis `md:` et `lg:` pour l'agrandissement
+- Taille de texte minimum : `text-sm` (14px) pour le corps de texte
+- Utiliser les couleurs sémantiques définies dans `tailwind.config.ts` pour les rôles :
+  - `role-cook` → vert
+  - `role-coach` → bleu
+  - `role-player` → orange
+  - `role-nutritionist` → violet
+- Grouper les classes Tailwind par catégorie : layout → spacing → typography → colors → states
+
+## Next.js
+
+- Utiliser **App Router** (`app/`)
+- Les pages serveur récupèrent les données, les composants client gèrent l'interaction
+- Marquer `"use client"` uniquement quand nécessaire (interactivité, hooks browser)
+- Paramètres de route dynamiques : `[role]`, `[date]`
+
+## Accessibilité
+
+- Toujours fournir un `aria-label` sur les boutons sans texte visible
+- Utiliser les éléments sémantiques HTML (`nav`, `main`, `section`, `article`)

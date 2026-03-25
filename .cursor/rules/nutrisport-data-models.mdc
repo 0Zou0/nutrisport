@@ -1,0 +1,81 @@
+---
+description: Modèles de données NutriSport — types, orientations nutritionnelles, entraînements
+globs: **/*.ts, **/*.tsx
+alwaysApply: false
+---
+
+# Modèles de données NutriSport
+
+## Types principaux (`types/index.ts`)
+
+```typescript
+type UserRole = 'cook' | 'coach' | 'player' | 'nutritionist';
+
+type TrainingSlot = 'morning' | 'afternoon';
+type TrainingIntensity = 'low' | 'moderate' | 'high';
+
+interface Training {
+  slot: TrainingSlot;
+  type: string; // ex: "Muscu", "Rugby", "Repos"
+  intensity: TrainingIntensity;
+  duration?: number; // minutes
+}
+
+type NutritionalOrientation =
+  | 'ANTI-INFLAM'
+  | 'GLUC-MOD'
+  | 'GLUC-HAUT'
+  | 'PROT-BON'
+  | 'PROT-MAIGRE'
+  | 'ANTIOXYDANT'
+  | 'VIANDE-BLANCHE'
+  | 'GROSSE-MAT';
+
+interface MenuOption {
+  id: string;
+  title: string;
+  description: string;
+  available: boolean; // modifiable par le cuisinier
+}
+
+interface DayMenu {
+  starters: MenuOption[];  // entrées (options A, B, C)
+  mains: MenuOption[];     // plats principaux (options A, B, C)
+}
+
+interface DayData {
+  date: string; // ISO 8601 YYYY-MM-DD
+  trainings: Training[];
+  orientations: NutritionalOrientation[];
+  menu: DayMenu;
+}
+```
+
+## Orientations nutritionnelles — libellés
+
+| Code | Libellé complet |
+|------|-----------------|
+| `ANTI-INFLAM` | Repas anti-inflammatoire |
+| `GLUC-MOD` | Glucides modérés |
+| `GLUC-HAUT` | Glucides hauts — grosse journée |
+| `PROT-BON` | Bonne source de protéines |
+| `PROT-MAIGRE` | Protéines maigres |
+| `ANTIOXYDANT` | Antioxydants — Viande rouge |
+| `VIANDE-BLANCHE` | Viande blanche — Glucides modérés à hauts |
+| `GROSSE-MAT` | Grosse matinée — Viande blanche, Glucides mod-haut |
+
+## Couleurs des orientations (Tailwind)
+
+Associer une couleur cohérente par type :
+- Glucides hauts → `orange`
+- Anti-inflammatoire / Antioxydant → `green`
+- Protéines → `blue`
+- Viande blanche → `yellow`
+
+## Règles métier
+
+- Une journée peut avoir **0 à 2 séances** (une matin, une après-midi max)
+- Une journée peut avoir **plusieurs orientations** combinées
+- Seul le **nutritionniste** peut modifier les orientations et les intitulés de menu
+- Seul le **cuisinier** peut modifier le champ `available` d'une `MenuOption`
+- Le **joueur** n'a accès qu'à son propre planning

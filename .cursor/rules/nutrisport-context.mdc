@@ -1,0 +1,45 @@
+---
+description: Contexte global du projet NutriSport — stack, rôles, MVP scope
+alwaysApply: true
+---
+
+# NutriSport — Contexte projet
+
+## Présentation
+
+Plateforme de suivi nutritionnel et planification d'entraînements pour sportifs de haut niveau (Rugby). 4 rôles : **Cuisinier**, **Entraîneur**, **Joueur**, **Nutritionniste**.
+
+## Stack technique
+
+- **Frontend** : Next.js + TailwindCSS
+- **Backend** : Next.js API Routes
+- **BDD** : PostgreSQL via Supabase
+- **Auth** : Supabase Auth (post-MVP — simulée au MVP)
+- **Hébergement** : Vercel + Supabase
+
+## Rôles & droits
+
+| Rôle | Couleur | Droits |
+|------|---------|--------|
+| Cuisinier | Vert | Lecture menus + disponibilité options |
+| Entraîneur | Bleu | Lecture + modification planning sportif |
+| Joueur | Orange | Lecture uniquement (son planning) |
+| Nutritionniste | Violet | Accès complet (admin contenu) |
+
+## MVP — Périmètre
+
+- Page d'accueil : sélection du rôle (4 boutons, pas d'auth réelle)
+- Vue semaine et vue mois du planning
+- Détail journée : 3 blocs (entraînements, orientation nutritionnelle, menu)
+- Données mockées acceptables au MVP
+
+## Routes principales
+
+```
+/                      → Accueil (choix rôle)
+/dashboard/:role       → Dashboard adapté au rôle
+/planning/semaine      → Vue semaine
+/planning/mois         → Vue mois
+/planning/jour/:date   → Détail journée
+/menu/:date            → Vue menu cuisinier
+```
