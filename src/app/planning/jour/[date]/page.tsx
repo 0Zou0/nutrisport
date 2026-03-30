@@ -19,12 +19,14 @@ export default function DayPage({ params }: DayPageProps) {
   const { role } = useRole();
   const [data, setData] = useState<DayData | null | undefined>(undefined);
 
-  useEffect(() => {
+  function fetchData() {
     fetch(`/api/planning/day/${date}`)
       .then(r => r.json())
       .then(setData)
       .catch(() => setData(null));
-  }, [date]);
+  }
+
+  useEffect(() => { fetchData(); }, [date]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!role) {
     return (
@@ -96,8 +98,18 @@ export default function DayPage({ params }: DayPageProps) {
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          <TrainingBlock trainings={data.trainings} role={role} />
-          <NutritionBlock orientations={data.orientations} role={role} />
+          <TrainingBlock
+            trainings={data.trainings}
+            role={role}
+            date={date}
+            onRefresh={fetchData}
+          />
+          <NutritionBlock
+            orientations={data.orientations}
+            role={role}
+            date={date}
+            onRefresh={fetchData}
+          />
           <MenuBlock menu={data.menu} role={role} />
         </div>
       )}

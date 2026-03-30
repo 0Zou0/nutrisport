@@ -14,10 +14,11 @@ interface MenuBlockProps {
 interface MenuOptionCardProps {
   option: MenuOption;
   canToggle: boolean;
+  saving: boolean;
   onToggle: () => void;
 }
 
-function MenuOptionCard({ option, canToggle, onToggle }: MenuOptionCardProps) {
+function MenuOptionCard({ option, canToggle, saving, onToggle }: MenuOptionCardProps) {
   const card = (
     <div className={`
       flex items-start gap-3 p-3 rounded-lg border transition-colors group
@@ -49,16 +50,23 @@ function MenuOptionCard({ option, canToggle, onToggle }: MenuOptionCardProps) {
       {canToggle && (
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggle(); }}
+          disabled={saving}
           aria-label={option.available ? 'Marquer indisponible' : 'Marquer disponible'}
           className={`
             shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors
+            ${saving ? 'opacity-50 cursor-wait' : ''}
             ${option.available
               ? 'bg-green-100 text-green-600 hover:bg-green-200'
               : 'bg-slate-200 text-slate-500 hover:bg-slate-300'
             }
           `}
         >
-          {option.available ? (
+          {saving ? (
+            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+            </svg>
+          ) : option.available ? (
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
@@ -80,16 +88,42 @@ function MenuOptionCard({ option, canToggle, onToggle }: MenuOptionCardProps) {
 
 export function MenuBlock({ menu: initialMenu, role, detailHref }: MenuBlockProps) {
   const [menu, setMenu] = useState<DayMenu>(initialMenu);
+  const [saving, setSaving] = useState<string | null>(null);
   const canToggleAvailability = canEdit(role, 'menu-availability');
   const canEditTitle = canEdit(role, 'menu-title');
 
-  function toggleOption(section: 'starters' | 'mains', id: string) {
+  async function toggleOption(section: 'starters' | 'mains', id: string) {
+    const current = menu[section].find(o => o.id === id);
+    if (!current) return;
+
+    const newAvailable = !current.available;
+
+    // Optimistic update
     setMenu(prev => ({
       ...prev,
       [section]: prev[section].map(opt =>
-        opt.id === id ? { ...opt, available: !opt.available } : opt
+        opt.id === id ? { ...opt, available: newAvailable } : opt
       ),
     }));
+
+    setSaving(id);
+    try {
+      await fetch(`/api/menu-option/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ available: newAvailable }),
+      });
+    } catch {
+      // Rollback en cas d'erreur
+      setMenu(prev => ({
+        ...prev,
+        [section]: prev[section].map(opt =>
+          opt.id === id ? { ...opt, available: current.available } : opt
+        ),
+      }));
+    } finally {
+      setSaving(null);
+    }
   }
 
   const availableStarters = menu.starters.filter(o => o.available).length;
@@ -139,6 +173,7 @@ export function MenuBlock({ menu: initialMenu, role, detailHref }: MenuBlockProp
                 key={opt.id}
                 option={opt}
                 canToggle={canToggleAvailability}
+                saving={saving === opt.id}
                 onToggle={() => toggleOption('starters', opt.id)}
               />
             ))}
@@ -163,6 +198,7 @@ export function MenuBlock({ menu: initialMenu, role, detailHref }: MenuBlockProp
                 key={opt.id}
                 option={opt}
                 canToggle={canToggleAvailability}
+                saving={saving === opt.id}
                 onToggle={() => toggleOption('mains', opt.id)}
               />
             ))}

@@ -4,6 +4,7 @@ export type TrainingSlot = 'morning' | 'afternoon';
 export type TrainingIntensity = 'low' | 'moderate' | 'high';
 
 export interface Training {
+  id?: string;
   slot: TrainingSlot;
   type: string;
   intensity: TrainingIntensity;

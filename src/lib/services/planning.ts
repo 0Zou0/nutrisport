@@ -33,6 +33,7 @@ const ORIENTATION_MAP: Record<string, NutritionalOrientation> = {
 
 function mapDayPlan(date: string, dayPlan: DayPlanFull): DayData {
   const trainings: Training[] = dayPlan.trainings.map((t: TrainingSession) => ({
+    id:        t.id,
     slot:      SLOT_MAP[t.slot],
     type:      t.type,
     intensity: INTENSITY_MAP[t.intensity],
