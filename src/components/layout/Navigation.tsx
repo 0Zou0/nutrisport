@@ -19,29 +19,33 @@ export function Navigation() {
   const bgActive = config?.bgColor ?? 'bg-blue-600';
 
   return (
-    <nav className="bg-slate-800 border-b border-slate-700" aria-label="Navigation principale">
-      <div className="max-w-5xl mx-auto px-4">
-        <ul className="flex justify-center gap-1 overflow-x-auto py-2" role="list">
+    <nav className="bg-slate-900/95 backdrop-blur border-b border-white/5" aria-label="Navigation principale">
+      <div className="max-w-5xl mx-auto px-3">
+        <ul className="flex gap-2 py-2.5" role="list">
           {NAV_ITEMS.map(({ label, href, icon }) => {
             const to = href();
             const isActive =
               (label === "Aujourd'hui" && pathname.startsWith('/planning/jour')) ||
-              (label === 'Semaine' && pathname.startsWith('/planning/semaine')) ||
-              (label === 'Mois' && pathname.startsWith('/planning/mois'));
+              (label === 'Semaine'     && pathname.startsWith('/planning/semaine')) ||
+              (label === 'Mois'        && pathname.startsWith('/planning/mois'));
             return (
-              <li key={label}>
+              <li key={label} className="flex-1">
                 <Link
                   href={to}
                   className={`
-                    flex items-center justify-center gap-1.5 w-32 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors
+                    relative flex flex-col items-center gap-0.5 w-full px-2 py-2 rounded-xl text-xs font-semibold
+                    transition-all duration-200 select-none
                     ${isActive
-                      ? `${bgActive} text-white shadow-sm`
-                      : 'text-slate-400 hover:text-white hover:bg-slate-700'
+                      ? `${bgActive} text-white shadow-lg shadow-black/30 scale-[1.04]`
+                      : 'text-slate-400 hover:text-white hover:bg-white/8'
                     }
                   `}
                 >
-                  <span className="text-base">{icon}</span>
-                  <span>{label}</span>
+                  <span className="text-lg leading-none">{icon}</span>
+                  <span className="tracking-wide">{label}</span>
+                  {isActive && (
+                    <span className="absolute -bottom-[11px] left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-white/40" />
+                  )}
                 </Link>
               </li>
             );
