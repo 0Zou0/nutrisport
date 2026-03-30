@@ -6,9 +6,9 @@ function mask(url?: string) {
   return url.replace(/\/\/([^:]+):([^@]+)@/, '//$1:***@');
 }
 
-async function tryConnect(url: string): Promise<{ ok: boolean; error?: string }> {
+async function tryConnect(url: string, sslOpts?: object): Promise<{ ok: boolean; error?: string }> {
   try {
-    const pool = new Pool({ connectionString: url, ssl: { rejectUnauthorized: false }, connectionTimeoutMillis: 8000 });
+    const pool = new Pool({ connectionString: url, ssl: sslOpts, connectionTimeoutMillis: 8000 });
     await pool.query('SELECT 1');
     await pool.end();
     return { ok: true };
@@ -27,7 +27,14 @@ export async function GET() {
 
   const results: Record<string, unknown> = {};
   for (const [key, url] of Object.entries(vars)) {
-    results[key] = { url: mask(url), ...(url ? await tryConnect(url) : { ok: false, error: 'non définie' }) };
+    if (!url) { results[key] = { url: 'non définie', ok: false }; continue; }
+    // Test 1 : avec rejectUnauthorized:false
+    const r1 = await tryConnect(url, { rejectUnauthorized: false });
+    if (r1.ok) { results[key] = { url: mask(url), ok: true, ssl: 'rejectUnauthorized:false' }; continue; }
+    // Test 2 : sans SSL explicite (laisse le URL gérer)
+    const r2 = await tryConnect(url);
+    if (r2.ok) { results[key] = { url: mask(url), ok: true, ssl: 'url-only' }; continue; }
+    results[key] = { url: mask(url), ok: false, err1: r1.error, err2: r2.error };
   }
 
   return NextResponse.json(results);
