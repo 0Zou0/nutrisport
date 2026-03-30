@@ -22,7 +22,6 @@ const TRAINING_ICONS: Record<string, string> = {
   'Récupération': '🛁',
   'Récupération active': '🛁',
   'Repos': '😴',
-  'Vidéo — analyse tactique': '📺',
   'Match': '🏆',
   'Rugby — séance collective': '🏉',
 };
@@ -74,12 +73,6 @@ export function MonthPlanning({ role }: MonthPlanningProps) {
           <h2 className="text-base font-semibold text-slate-800 capitalize">
             {formatMonthYear(year, month)}
           </h2>
-          <button
-            onClick={goCurrentMonth}
-            className="text-xs text-slate-400 hover:text-slate-600 transition-colors"
-          >
-            Mois courant
-          </button>
         </div>
 
         <button
@@ -94,11 +87,11 @@ export function MonthPlanning({ role }: MonthPlanningProps) {
       </div>
 
       {/* Grille */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-300 overflow-hidden shadow-sm">
         {/* En-têtes jours */}
-        <div className="grid grid-cols-7 border-b border-slate-200">
+        <div className="grid grid-cols-7 border-b border-slate-300 bg-slate-800">
           {WEEKDAY_LABELS.map(label => (
-            <div key={label} className="py-2 text-center text-xs font-semibold text-slate-500 uppercase tracking-wide">
+            <div key={label} className="py-2.5 text-center text-xs font-bold text-slate-300 uppercase tracking-wide">
               {label}
             </div>
           ))}
@@ -106,10 +99,10 @@ export function MonthPlanning({ role }: MonthPlanningProps) {
 
         {/* Semaines */}
         {grid.map((week, wi) => (
-          <div key={wi} className="grid grid-cols-7 border-b border-slate-100 last:border-b-0">
+          <div key={wi} className="grid grid-cols-7 border-b border-slate-200 last:border-b-0">
             {week.map((date, di) => {
               if (!date) {
-                return <div key={`empty-${wi}-${di}`} className="min-h-[72px] bg-slate-50/50" />;
+                return <div key={`empty-${wi}-${di}`} className="min-h-[72px] bg-slate-100" />;
               }
               const data = monthData[date];
               const today = isToday(date);
@@ -120,15 +113,15 @@ export function MonthPlanning({ role }: MonthPlanningProps) {
                   key={date}
                   href={`/planning/jour/${date}`}
                   className={`
-                    min-h-[72px] p-1.5 border-r border-slate-100 last:border-r-0
-                    flex flex-col gap-1 hover:bg-slate-50 transition-colors cursor-pointer
-                    ${today ? `${config.lightBg}` : ''}
+                    min-h-[72px] p-1.5 border-r border-slate-200 last:border-r-0
+                    flex flex-col gap-1 hover:bg-slate-100 transition-colors cursor-pointer
+                    ${today ? `${config.lightBg}` : 'bg-white'}
                   `}
                 >
                   {/* Numéro */}
                   <span className={`
-                    text-xs font-semibold w-6 h-6 flex items-center justify-center rounded-full
-                    ${today ? `${config.bgColor} text-white` : 'text-slate-600'}
+                    text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full
+                    ${today ? `${config.bgColor} text-white` : 'text-slate-700'}
                   `}>
                     {dayNum}
                   </span>

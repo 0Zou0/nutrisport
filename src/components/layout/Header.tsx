@@ -11,10 +11,10 @@ export function Header() {
   const config = role ? ROLE_CONFIGS[role] : null;
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
+    <header className="sticky top-0 z-40 bg-slate-900 shadow-lg">
       <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-slate-900 text-lg shrink-0">
+        <Link href="/" className="flex items-center gap-2 font-bold text-white text-lg shrink-0">
           <span className="text-xl">🏉</span>
           <span>NutriSport</span>
         </Link>
@@ -22,13 +22,13 @@ export function Header() {
         {/* Rôle actif */}
         {config && (
           <div className="flex items-center gap-2">
-            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${config.lightBg} ${config.color}`}>
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold ${config.bgColor} text-white`}>
               <span>{config.icon}</span>
               <span className="hidden sm:inline">{config.label}</span>
             </span>
             <button
               onClick={() => router.push('/')}
-              className="text-xs text-slate-500 hover:text-slate-700 transition-colors px-2 py-1 rounded hover:bg-slate-100"
+              className="text-xs text-slate-400 hover:text-white transition-colors px-2 py-1 rounded hover:bg-slate-700"
             >
               Changer
             </button>

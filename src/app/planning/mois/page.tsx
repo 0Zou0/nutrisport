@@ -21,10 +21,6 @@ export default function MoisPage() {
 
   return (
     <AppLayout>
-      <div className="mb-4">
-        <h1 className="text-xl font-bold text-slate-900">Planning du mois</h1>
-        <p className="text-sm text-slate-500 mt-1">Cliquez sur un jour pour voir le détail</p>
-      </div>
       <MonthPlanning role={role} />
     </AppLayout>
   );

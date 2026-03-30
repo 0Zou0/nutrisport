@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { Training, UserRole } from '@/types';
 import { Badge } from '@/components/ui/Badge';
 import { INTENSITY_COLORS, INTENSITY_LABELS } from '@/lib/utils';
@@ -11,20 +12,20 @@ interface TrainingBlockProps {
 }
 
 const SLOT_LABELS = { morning: 'Matin', afternoon: 'Après-midi' };
-const SLOT_ICONS = { morning: '🌅', afternoon: '🌆' };
+const SLOT_ICONS = { morning: '☀️', afternoon: '🌙' };
 
 export function TrainingBlock({ trainings, role }: TrainingBlockProps) {
   const editable = canEdit(role, 'training');
 
   return (
-    <section className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+    <section className="bg-white rounded-xl border border-slate-300 overflow-hidden shadow-sm">
+      <div className="flex items-center justify-between px-4 py-3 bg-slate-800 border-b border-slate-700">
         <div className="flex items-center gap-2">
           <span className="text-lg">🏋️</span>
-          <h2 className="font-semibold text-slate-800">Entraînements</h2>
+          <h2 className="font-semibold text-white">Entraînements</h2>
         </div>
         {editable && (
-          <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full font-medium">
+          <span className="text-xs px-2 py-0.5 bg-blue-500 text-white rounded-full font-medium">
             Modifiable
           </span>
         )}
@@ -36,18 +37,18 @@ export function TrainingBlock({ trainings, role }: TrainingBlockProps) {
             <span className="text-2xl">😴</span>
             <div>
               <p className="font-medium text-slate-700">Journée de repos</p>
-              <p className="text-sm text-slate-400">Aucune séance prévue</p>
+              <p className="text-sm text-slate-500">Aucune séance prévue</p>
             </div>
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="grid gap-3" style={{ gridTemplateColumns: '64px 1fr' }}>
             {trainings.map((t, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <div className="flex flex-col items-center gap-1 min-w-[52px]">
+              <React.Fragment key={i}>
+                <div className="flex flex-col items-center justify-center gap-1">
                   <span className="text-xl">{SLOT_ICONS[t.slot]}</span>
-                  <span className="text-xs text-slate-400 font-medium">{SLOT_LABELS[t.slot]}</span>
+                  <span className="text-xs text-slate-500 font-medium text-center">{SLOT_LABELS[t.slot]}</span>
                 </div>
-                <div className="flex-1 bg-slate-50 rounded-lg px-3 py-2.5">
+                <div className="bg-slate-100 border border-slate-200 rounded-lg px-3 py-2.5">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-medium text-slate-800 text-sm">{t.type}</span>
                     <Badge className={INTENSITY_COLORS[t.intensity]}>
@@ -63,7 +64,7 @@ export function TrainingBlock({ trainings, role }: TrainingBlockProps) {
                     </div>
                   )}
                 </div>
-              </div>
+              </React.Fragment>
             ))}
           </div>
         )}

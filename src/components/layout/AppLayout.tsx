@@ -10,7 +10,7 @@ interface AppLayoutProps {
 
 export function AppLayout({ children, showNav = true }: AppLayoutProps) {
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
+    <div className="flex flex-col min-h-screen bg-slate-200">
       <Header />
       {showNav && <Navigation />}
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-6">

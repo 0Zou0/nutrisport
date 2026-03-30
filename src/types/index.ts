@@ -25,6 +25,45 @@ export interface MenuOption {
   title: string;
   description: string;
   available: boolean;
+  recipeId?: string;
+}
+
+export interface Ingredient {
+  name: string;
+  quantity: string;
+  unit?: string;
+}
+
+export interface RecipeStep {
+  order: number;
+  instruction: string;
+}
+
+export interface NutritionFacts {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  fiber?: number;
+}
+
+export type RecipeDifficulty = 'easy' | 'medium' | 'hard';
+export type RecipeCategory = 'starter' | 'main';
+
+export interface Recipe {
+  id: string;
+  title: string;
+  description: string;
+  category: RecipeCategory;
+  prepTime: number;
+  cookTime: number;
+  servings: number;
+  difficulty: RecipeDifficulty;
+  ingredients: Ingredient[];
+  steps: RecipeStep[];
+  nutrition: NutritionFacts;
+  tags: string[];
+  orientations: NutritionalOrientation[];
 }
 
 export interface DayMenu {

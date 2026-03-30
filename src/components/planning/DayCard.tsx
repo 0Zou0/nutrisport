@@ -28,26 +28,26 @@ export function DayCard({ date, data, role, compact = false }: DayCardProps) {
       href={`/planning/jour/${date}`}
       className={`
         group flex flex-col rounded-xl border bg-white
-        hover:shadow-md transition-all duration-150
-        ${today ? `border-2 ${config.borderColor} shadow-sm` : 'border-slate-200'}
+        hover:shadow-lg hover:-translate-y-0.5 transition-all duration-150
+        ${today ? `border-2 ${config.borderColor} shadow-md` : 'border-slate-300 shadow-sm'}
         ${compact ? 'min-w-[130px]' : 'min-w-[160px]'}
       `}
     >
       {/* En-tête date */}
       <div className={`
         flex items-center justify-between px-3 py-2 rounded-t-xl
-        ${today ? `${config.lightBg}` : 'bg-slate-50'}
+        ${today ? `${config.bgColor}` : 'bg-slate-700'}
       `}>
         <div>
-          <div className={`text-xs font-medium uppercase tracking-wide ${today ? config.color : 'text-slate-400'}`}>
+          <div className="text-xs font-medium uppercase tracking-wide text-white/70">
             {weekday}
           </div>
-          <div className={`text-xl font-bold leading-none ${today ? config.color : 'text-slate-800'}`}>
+          <div className="text-xl font-bold leading-none text-white">
             {dayNum}
           </div>
         </div>
         {today && (
-          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${config.bgColor} text-white`}>
+          <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-white/25 text-white">
             Auj.
           </span>
         )}
@@ -56,7 +56,7 @@ export function DayCard({ date, data, role, compact = false }: DayCardProps) {
       {/* Corps */}
       <div className="flex flex-col gap-2 p-3 flex-1">
         {!data ? (
-          <span className="text-xs text-slate-400 italic">Aucune donnée</span>
+          <span className="text-xs text-slate-500 italic">Aucune donnée</span>
         ) : (
           <>
             {/* Entraînements */}
@@ -65,7 +65,7 @@ export function DayCard({ date, data, role, compact = false }: DayCardProps) {
                 {data.trainings.map((t, i) => (
                   <div key={i} className="flex items-center gap-1.5">
                     <span className="text-xs">{t.slot === 'morning' ? '🌅' : '🌆'}</span>
-                    <span className="text-xs text-slate-600 truncate flex-1">{t.type}</span>
+                    <span className="text-xs text-slate-700 font-medium truncate flex-1">{t.type}</span>
                     <Badge className={INTENSITY_COLORS[t.intensity]} size="sm">
                       {INTENSITY_LABELS[t.intensity].charAt(0)}
                     </Badge>
@@ -80,7 +80,7 @@ export function DayCard({ date, data, role, compact = false }: DayCardProps) {
             )}
 
             {/* Séparateur */}
-            {!compact && <div className="border-t border-slate-100" />}
+            {!compact && <div className="border-t border-slate-200" />}
 
             {/* Orientations nutritionnelles */}
             {!compact && (

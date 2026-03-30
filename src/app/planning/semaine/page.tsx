@@ -21,10 +21,6 @@ export default function SemainePage() {
 
   return (
     <AppLayout>
-      <div className="mb-4">
-        <h1 className="text-xl font-bold text-slate-900">Planning de la semaine</h1>
-        <p className="text-sm text-slate-500 mt-1">Cliquez sur un jour pour voir le détail</p>
-      </div>
       <WeekPlanning role={role} />
     </AppLayout>
   );

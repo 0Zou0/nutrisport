@@ -60,10 +60,6 @@ export default function DayPage({ params }: DayPageProps) {
           <h1 className="text-lg font-bold text-slate-900 capitalize">
             {formatDate(date)}
           </h1>
-          <span className={`inline-flex items-center gap-1 text-xs font-medium ${config.color}`}>
-            <span>{config.icon}</span>
-            <span>{config.label}</span>
-          </span>
         </div>
 
         <Link

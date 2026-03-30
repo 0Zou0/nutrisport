@@ -16,25 +16,27 @@ export function Navigation() {
   const { role } = useRole();
   const config = role ? ROLE_CONFIGS[role] : null;
 
-  const borderActive = config?.borderColor ?? 'border-blue-600';
-  const textActive = config?.color ?? 'text-blue-700';
+  const bgActive = config?.bgColor ?? 'bg-blue-600';
 
   return (
-    <nav className="bg-white border-b border-slate-200" aria-label="Navigation principale">
+    <nav className="bg-slate-800 border-b border-slate-700" aria-label="Navigation principale">
       <div className="max-w-5xl mx-auto px-4">
-        <ul className="flex gap-0 overflow-x-auto scrollbar-hide" role="list">
+        <ul className="flex justify-center gap-1 overflow-x-auto py-2" role="list">
           {NAV_ITEMS.map(({ label, href, icon }) => {
             const to = href();
-            const isActive = pathname === to || (label === 'Semaine' && pathname.startsWith('/planning/semaine')) || (label === 'Mois' && pathname.startsWith('/planning/mois'));
+            const isActive =
+              (label === "Aujourd'hui" && pathname.startsWith('/planning/jour')) ||
+              (label === 'Semaine' && pathname.startsWith('/planning/semaine')) ||
+              (label === 'Mois' && pathname.startsWith('/planning/mois'));
             return (
               <li key={label}>
                 <Link
                   href={to}
                   className={`
-                    flex items-center gap-1.5 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors
+                    flex items-center justify-center gap-1.5 w-32 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors
                     ${isActive
-                      ? `${borderActive} ${textActive}`
-                      : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                      ? `${bgActive} text-white shadow-sm`
+                      : 'text-slate-400 hover:text-white hover:bg-slate-700'
                     }
                   `}
                 >

@@ -3,38 +3,38 @@ import { DayData } from '@/types';
 const WEEK_MENUS = {
   standard: {
     starters: [
-      { id: 's1', title: 'Salade de quinoa', description: 'Quinoa, légumes grillés, vinaigrette citron', available: true },
-      { id: 's2', title: 'Velouté de potiron', description: 'Courge butternut, noix de muscade, crème légère', available: true },
-      { id: 's3', title: 'Carpaccio de betterave', description: 'Betterave rôtie, chèvre frais, graines de tournesol', available: true },
+      { id: 'std-s1', title: 'Salade de quinoa', description: 'Quinoa, légumes grillés, vinaigrette citron', available: true, recipeId: 'std-s1' },
+      { id: 'std-s2', title: 'Velouté de potiron', description: 'Courge butternut, noix de muscade, crème légère', available: true, recipeId: 'std-s2' },
+      { id: 'std-s3', title: 'Carpaccio de betterave', description: 'Betterave rôtie, chèvre frais, graines de tournesol', available: true, recipeId: 'std-s3' },
     ],
     mains: [
-      { id: 'm1', title: 'Poulet rôti patates douces', description: 'Filet de poulet fermier, patates douces rôties, haricots verts', available: true },
-      { id: 'm2', title: 'Saumon grillé riz complet', description: 'Pavé de saumon, riz complet, brocolis vapeur', available: true },
-      { id: 'm3', title: 'Pâtes bolognaise', description: 'Pâtes semi-complètes, bœuf haché maigre, tomates fraîches', available: true },
+      { id: 'std-m1', title: 'Poulet rôti patates douces', description: 'Filet de poulet fermier, patates douces rôties, haricots verts', available: true, recipeId: 'std-m1' },
+      { id: 'std-m2', title: 'Saumon grillé riz complet', description: 'Pavé de saumon, riz complet, brocolis vapeur', available: true, recipeId: 'std-m2' },
+      { id: 'std-m3', title: 'Pâtes bolognaise sport', description: 'Pâtes semi-complètes, bœuf haché maigre, tomates fraîches', available: true, recipeId: 'std-m3' },
     ],
   },
   antiInflam: {
     starters: [
-      { id: 's1', title: 'Smoothie vert', description: 'Épinards, concombre, gingembre, citron vert', available: true },
-      { id: 's2', title: 'Tartare de thon', description: 'Thon frais, avocat, sésame, sauce soja légère', available: true },
-      { id: 's3', title: 'Salade de mâche grenade', description: 'Mâche, grenade, noix, vinaigrette tumérique', available: true },
+      { id: 'ai-s1', title: 'Smoothie vert anti-inflammatoire', description: 'Épinards, concombre, gingembre, citron vert', available: true, recipeId: 'ai-s1' },
+      { id: 'ai-s2', title: 'Tartare de thon', description: 'Thon frais, avocat, sésame, sauce soja légère', available: true, recipeId: 'ai-s2' },
+      { id: 'ai-s3', title: 'Salade de mâche grenade', description: 'Mâche, grenade, noix, vinaigrette tumérique', available: true, recipeId: 'ai-s3' },
     ],
     mains: [
-      { id: 'm1', title: 'Saumon avocat quinoa', description: 'Saumon sauvage, quinoa noir, avocat, épinards', available: true },
-      { id: 'm2', title: 'Poulet curcuma légumes', description: 'Poulet mariné curcuma-gingembre, légumes colorés', available: true },
-      { id: 'm3', title: 'Bowl végétarien', description: 'Pois chiches rôtis, patate douce, chou rouge, tahini', available: true },
+      { id: 'ai-m1', title: 'Saumon avocat quinoa', description: 'Saumon sauvage, quinoa noir, avocat, épinards', available: true, recipeId: 'ai-m1' },
+      { id: 'ai-m2', title: 'Poulet curcuma légumes colorés', description: 'Poulet mariné curcuma-gingembre, légumes colorés', available: true, recipeId: 'ai-m2' },
+      { id: 'ai-m3', title: 'Bowl végétarien complet', description: 'Pois chiches rôtis, patate douce, chou rouge, tahini', available: true, recipeId: 'ai-m3' },
     ],
   },
   matchDay: {
     starters: [
-      { id: 's1', title: 'Riz au lait protéiné', description: 'Riz complet, lait d\'amande, cannelle, miel', available: true },
-      { id: 's2', title: 'Soupe de légumineuses', description: 'Lentilles corail, tomates, épices douces', available: true },
-      { id: 's3', title: 'Tartines complètes œufs', description: 'Pain complet, œufs pochés, avocat, graines chia', available: true },
+      { id: 'md-s1', title: 'Riz au lait protéiné', description: 'Riz complet, lait d\'amande, cannelle, miel', available: true, recipeId: 'md-s1' },
+      { id: 'md-s2', title: 'Soupe de légumineuses', description: 'Lentilles corail, tomates, épices douces', available: true, recipeId: 'md-s2' },
+      { id: 'md-s3', title: 'Tartines complètes œufs pochés avocat', description: 'Pain complet, œufs pochés, avocat, graines chia', available: true, recipeId: 'md-s3' },
     ],
     mains: [
-      { id: 'm1', title: 'Pâtes poulet sauce tomate', description: 'Pâtes complètes, blanc de poulet, sauce tomate maison', available: true },
-      { id: 'm2', title: 'Risotto jambon herbes', description: 'Riz arborio, jambon blanc, parmesan léger, herbes', available: true },
-      { id: 'm3', title: 'Burger sport maison', description: 'Pain complet, steak haché 5% MG, légumes, sauce yaourt', available: true },
+      { id: 'md-m1', title: 'Pâtes poulet sauce tomate', description: 'Pâtes complètes, blanc de poulet, sauce tomate maison', available: true, recipeId: 'md-m1' },
+      { id: 'md-m2', title: 'Risotto jambon herbes', description: 'Riz arborio, jambon blanc, parmesan léger, herbes', available: true, recipeId: 'md-m2' },
+      { id: 'md-m3', title: 'Burger sport maison', description: 'Pain complet, steak haché 5% MG, légumes, sauce yaourt', available: true, recipeId: 'md-m3' },
     ],
   },
 };
@@ -63,7 +63,7 @@ const mockDays: DayData[] = [
     date: '2026-03-18',
     trainings: [
       { slot: 'morning', type: 'Mobilité', intensity: 'low', duration: 40 },
-      { slot: 'afternoon', type: 'Vidéo — analyse tactique', intensity: 'low', duration: 60 },
+      { slot: 'afternoon', type: 'Musculation', intensity: 'high', duration: 75 },
     ],
     orientations: ['GLUC-MOD', 'VIANDE-BLANCHE'],
     menu: WEEK_MENUS.standard,
@@ -124,7 +124,7 @@ const mockDays: DayData[] = [
     date: '2026-03-25',
     trainings: [
       { slot: 'morning', type: 'Mobilité', intensity: 'low', duration: 40 },
-      { slot: 'afternoon', type: 'Vidéo — analyse tactique', intensity: 'low', duration: 60 },
+      { slot: 'afternoon', type: 'Rugby — séance collective', intensity: 'high', duration: 95 },
     ],
     orientations: ['GLUC-MOD', 'VIANDE-BLANCHE'],
     menu: WEEK_MENUS.standard,
@@ -183,7 +183,7 @@ const mockDays: DayData[] = [
     date: '2026-04-01',
     trainings: [
       { slot: 'morning', type: 'Mobilité', intensity: 'low', duration: 35 },
-      { slot: 'afternoon', type: 'Vidéo — analyse tactique', intensity: 'low', duration: 60 },
+      { slot: 'afternoon', type: 'Rugby — séance collective', intensity: 'high', duration: 95 },
     ],
     orientations: ['GLUC-MOD', 'VIANDE-BLANCHE'],
     menu: WEEK_MENUS.standard,
