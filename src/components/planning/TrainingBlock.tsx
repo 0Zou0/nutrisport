@@ -90,7 +90,7 @@ function TrainingFormModal({
       if (!res.ok) throw new Error('Erreur serveur');
       onSave();
     } catch {
-      setError('Erreur lors de la sauvegarde');
+      setError('Impossible de sauvegarder — vérifiez la connexion à la base de données');
     } finally {
       setSaving(false);
     }
@@ -212,13 +212,22 @@ export function TrainingBlock({ trainings, role, date, onRefresh }: TrainingBloc
   const editable = canEdit(role, 'training');
   const [modal, setModal] = useState<{ open: boolean; training?: Training }>({ open: false });
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ msg: string; type: 'error' | 'success' } | null>(null);
+
+  function showToast(msg: string, type: 'error' | 'success' = 'success') {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3500);
+  }
 
   async function handleDelete(id: string) {
     if (!confirm('Supprimer cette séance ?')) return;
     setDeleting(id);
     try {
-      await fetch(`/api/training/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/training/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error();
       onRefresh?.();
+    } catch {
+      showToast('Erreur lors de la suppression', 'error');
     } finally {
       setDeleting(null);
     }
@@ -226,6 +235,7 @@ export function TrainingBlock({ trainings, role, date, onRefresh }: TrainingBloc
 
   function handleSaved() {
     setModal({ open: false });
+    showToast('Séance enregistrée ✓', 'success');
     onRefresh?.();
   }
 
@@ -334,6 +344,14 @@ export function TrainingBlock({ trainings, role, date, onRefresh }: TrainingBloc
           onClose={() => setModal({ open: false })}
           onSave={handleSaved}
         />
+      )}
+
+      {/* Toast notification */}
+      {toast && (
+        <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium transition-all
+          ${toast.type === 'error' ? 'bg-red-500 text-white' : 'bg-slate-800 text-white'}`}>
+          {toast.msg}
+        </div>
       )}
     </>
   );

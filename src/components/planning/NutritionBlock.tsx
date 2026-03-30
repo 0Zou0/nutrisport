@@ -45,7 +45,7 @@ export function NutritionBlock({ orientations: initialOrientations, role, date, 
       setEditing(false);
       onRefresh?.();
     } catch {
-      setError('Erreur lors de la sauvegarde');
+      setError('Impossible de sauvegarder — base de données inaccessible');
     } finally {
       setSaving(false);
     }
