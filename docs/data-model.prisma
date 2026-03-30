@@ -1,0 +1,322 @@
+// ============================================================
+// NutriSport — Modèle de données (Prisma / PostgreSQL)
+// Version : 0.1 — Proposition initiale
+// ============================================================
+//
+// ORGANISATION DES ENTITÉS :
+//
+//  Club
+//  └── User (membre du club, avec un rôle)
+//
+//  Season (saison sportive d'un club)
+//  └── DayPlan (un jour planifié dans la saison)
+//      ├── TrainingSession[] (séances du jour)
+//      └── DayMenu (menu du jour)
+//          ├── MenuOption[] (plats proposés)
+//          │   └── Recipe (fiche recette)
+//          └── NutritionalOrientation[] (orientations du jour)
+//
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────
+// MULTI-TENANT : CLUB
+// ─────────────────────────────────────────
+
+model Club {
+  id        String   @id @default(cuid())
+  name      String                          // "Stade Aurillacois"
+  sport     String   @default("rugby")      // "rugby", "football", etc.
+  logoUrl   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members   User[]
+  seasons   Season[]
+  recipes   Recipe[]
+}
+
+// ─────────────────────────────────────────
+// UTILISATEURS & RÔLES
+// ─────────────────────────────────────────
+
+enum UserRole {
+  COOK           // Cuisinier
+  COACH          // Entraîneur
+  PLAYER         // Joueur
+  NUTRITIONIST   // Nutritionniste
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  avatarUrl    String?
+  role         UserRole
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Multi-tenant : un user appartient à un club
+  clubId       String
+  club         Club      @relation(fields: [clubId], references: [id], onDelete: Cascade)
+
+  // Traçabilité : qui a créé/modifié quoi
+  createdDayPlans      DayPlan[]          @relation("CreatedBy")
+  updatedDayPlans      DayPlan[]          @relation("UpdatedBy")
+  createdMenuOptions   MenuOption[]       @relation("CreatedBy")
+
+  @@index([clubId])
+  @@index([email])
+}
+
+// ─────────────────────────────────────────
+// SAISON SPORTIVE
+// ─────────────────────────────────────────
+
+model Season {
+  id        String    @id @default(cuid())
+  name      String                          // "Saison 2025-2026"
+  startDate DateTime
+  endDate   DateTime
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+
+  clubId    String
+  club      Club      @relation(fields: [clubId], references: [id], onDelete: Cascade)
+
+  dayPlans  DayPlan[]
+
+  @@index([clubId])
+}
+
+// ─────────────────────────────────────────
+// PLANIFICATION JOURNALIÈRE
+// ─────────────────────────────────────────
+
+model DayPlan {
+  id        String    @id @default(cuid())
+  date      DateTime  @db.Date               // Date du jour planifié
+  notes     String?                           // Note libre du staff
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  seasonId  String
+  season    Season    @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+
+  createdById String
+  createdBy   User    @relation("CreatedBy", fields: [createdById], references: [id])
+  updatedById String?
+  updatedBy   User?   @relation("UpdatedBy", fields: [updatedById], references: [id])
+
+  trainings    TrainingSession[]
+  orientations DayOrientation[]
+  menu         DayMenu?
+
+  @@unique([seasonId, date])    // Un seul plan par jour par saison
+  @@index([seasonId])
+  @@index([date])
+}
+
+// ─────────────────────────────────────────
+// SÉANCES D'ENTRAÎNEMENT
+// ─────────────────────────────────────────
+
+enum TrainingSlot {
+  MORNING
+  AFTERNOON
+}
+
+enum TrainingIntensity {
+  LOW
+  MODERATE
+  HIGH
+}
+
+model TrainingSession {
+  id          String            @id @default(cuid())
+  slot        TrainingSlot
+  type        String                            // "Rugby — séance collective", "Musculation", etc.
+  intensity   TrainingIntensity
+  durationMin Int?                              // Durée en minutes
+  location    String?                           // "Stade", "Salle de muscu", etc.
+  notes       String?
+
+  dayPlanId   String
+  dayPlan     DayPlan           @relation(fields: [dayPlanId], references: [id], onDelete: Cascade)
+
+  @@index([dayPlanId])
+}
+
+// ─────────────────────────────────────────
+// ORIENTATIONS NUTRITIONNELLES
+// ─────────────────────────────────────────
+
+enum NutritionalOrientation {
+  ANTI_INFLAM
+  GLUC_MOD
+  GLUC_HAUT
+  PROT_BON
+  PROT_MAIGRE
+  ANTIOXYDANT
+  VIANDE_BLANCHE
+  GROSSE_MAT
+}
+
+model DayOrientation {
+  id          String                  @id @default(cuid())
+  orientation NutritionalOrientation
+  priority    Int                     @default(0)   // Ordre d'affichage
+
+  dayPlanId   String
+  dayPlan     DayPlan                 @relation(fields: [dayPlanId], references: [id], onDelete: Cascade)
+
+  @@index([dayPlanId])
+}
+
+// ─────────────────────────────────────────
+// MENU DU JOUR
+// ─────────────────────────────────────────
+
+model DayMenu {
+  id        String       @id @default(cuid())
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  dayPlanId String       @unique
+  dayPlan   DayPlan      @relation(fields: [dayPlanId], references: [id], onDelete: Cascade)
+
+  options   MenuOption[]
+}
+
+enum MenuCategory {
+  STARTER   // Entrée
+  MAIN      // Plat principal
+  DESSERT   // Dessert
+}
+
+model MenuOption {
+  id          String       @id @default(cuid())
+  category    MenuCategory
+  available   Boolean      @default(true)
+  sortOrder   Int          @default(0)
+  createdAt   DateTime     @default(now())
+
+  dayMenuId   String
+  dayMenu     DayMenu      @relation(fields: [dayMenuId], references: [id], onDelete: Cascade)
+
+  // Lien optionnel vers une fiche recette
+  recipeId    String?
+  recipe      Recipe?      @relation(fields: [recipeId], references: [id])
+
+  createdById String?
+  createdBy   User?        @relation("CreatedBy", fields: [createdById], references: [id])
+
+  @@index([dayMenuId])
+}
+
+// ─────────────────────────────────────────
+// RECETTES
+// ─────────────────────────────────────────
+
+enum RecipeDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Recipe {
+  id          String           @id @default(cuid())
+  title       String
+  description String?
+  category    MenuCategory
+  difficulty  RecipeDifficulty
+  prepTimeMin Int
+  cookTimeMin Int
+  servings    Int
+  imageUrl    String?
+  isPublic    Boolean          @default(false)    // Partageable entre clubs ?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Appartient à un club (bibliothèque privée)
+  clubId      String
+  club        Club             @relation(fields: [clubId], references: [id], onDelete: Cascade)
+
+  ingredients  Ingredient[]
+  steps        RecipeStep[]
+  nutrition    NutritionFacts?
+  tags         RecipeTag[]
+  orientations RecipeOrientation[]
+  menuOptions  MenuOption[]
+
+  @@index([clubId])
+}
+
+model Ingredient {
+  id       String  @id @default(cuid())
+  name     String
+  quantity Float
+  unit     String   // "g", "ml", "unité", "c. à soupe"
+  notes    String?
+
+  recipeId String
+  recipe   Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId])
+}
+
+model RecipeStep {
+  id          String  @id @default(cuid())
+  stepNumber  Int
+  instruction String
+  durationMin Int?
+  imageUrl    String?
+
+  recipeId    String
+  recipe      Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId])
+}
+
+model NutritionFacts {
+  id         String  @id @default(cuid())
+  calories   Float                   // kcal pour 1 portion
+  protein    Float                   // g
+  carbs      Float                   // g
+  fat        Float                   // g
+  fiber      Float?                  // g
+  sugar      Float?                  // g
+  sodium     Float?                  // mg
+
+  recipeId   String  @unique
+  recipe     Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+}
+
+model RecipeTag {
+  id       String @id @default(cuid())
+  label    String                    // "sans gluten", "végétarien", "rapide"
+
+  recipeId String
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId])
+}
+
+model RecipeOrientation {
+  id          String                 @id @default(cuid())
+  orientation NutritionalOrientation
+
+  recipeId    String
+  recipe      Recipe                 @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId])
+}

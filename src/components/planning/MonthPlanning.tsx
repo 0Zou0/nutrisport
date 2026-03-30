@@ -1,12 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   getMonthGrid, formatMonthYear, isToday, ORIENTATION_DOT, INTENSITY_COLORS,
 } from '@/lib/utils';
-import { getMonthData } from '@/lib/mock-data';
-import { UserRole } from '@/types';
+import { DayData, UserRole } from '@/types';
 import { ROLE_CONFIGS } from '@/lib/utils';
 
 interface MonthPlanningProps {
@@ -37,10 +36,17 @@ export function MonthPlanning({ role }: MonthPlanningProps) {
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
+  const [monthData, setMonthData] = useState<Record<string, DayData>>({});
 
   const grid = getMonthGrid(year, month);
-  const monthData = getMonthData(year, month);
   const config = ROLE_CONFIGS[role];
+
+  useEffect(() => {
+    fetch(`/api/planning/month?year=${year}&month=${month}`)
+      .then(r => r.json())
+      .then(setMonthData)
+      .catch(() => setMonthData({}));
+  }, [year, month]);
 
   function prev() {
     if (month === 0) { setYear(y => y - 1); setMonth(11); }

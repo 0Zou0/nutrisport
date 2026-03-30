@@ -1,13 +1,12 @@
 'use client';
 
-import { use } from 'react';
+import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Badge } from '@/components/ui/Badge';
-import { getRecipe } from '@/lib/recipes';
 import { ORIENTATION_COLORS, ORIENTATION_LABELS } from '@/lib/utils';
-import { RecipeDifficulty } from '@/types';
+import { Recipe, RecipeDifficulty } from '@/types';
 
 interface RecipePageProps {
   params: Promise<{ id: string }>;
@@ -30,7 +29,26 @@ const CATEGORY_LABELS = { starter: 'Entrée', main: 'Plat principal' };
 export default function RecipePage({ params }: RecipePageProps) {
   const { id } = use(params);
   const router = useRouter();
-  const recipe = getRecipe(id);
+  const [recipe, setRecipe] = useState<Recipe | null | undefined>(undefined);
+
+  useEffect(() => {
+    fetch(`/api/recipes/${id}`)
+      .then(r => r.json())
+      .then(setRecipe)
+      .catch(() => setRecipe(null));
+  }, [id]);
+
+  if (recipe === undefined) {
+    return (
+      <AppLayout>
+        <div className="flex flex-col gap-4 animate-pulse p-4">
+          <div className="h-40 bg-slate-200 rounded-xl" />
+          <div className="h-24 bg-slate-200 rounded-xl" />
+          <div className="h-48 bg-slate-200 rounded-xl" />
+        </div>
+      </AppLayout>
+    );
+  }
 
   if (!recipe) {
     return (

@@ -1,11 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { DayCard } from './DayCard';
 import { Badge } from '@/components/ui/Badge';
 import { getWeekDates, addWeeks, isToday, ORIENTATION_DOT, ORIENTATION_LABELS, INTENSITY_COLORS, INTENSITY_LABELS, ROLE_CONFIGS } from '@/lib/utils';
-import { getWeekData } from '@/lib/mock-data';
 import { DayData, UserRole } from '@/types';
 
 interface WeekPlanningProps {
@@ -96,9 +95,17 @@ function DayRow({ date, data, role }: { date: string; data: DayData | null; role
 
 export function WeekPlanning({ role, initialDate }: WeekPlanningProps) {
   const [referenceDate, setReferenceDate] = useState(initialDate ?? new Date().toISOString().split('T')[0]);
+  const [weekData, setWeekData] = useState<(DayData | null)[]>([]);
 
   const weekDates = getWeekDates(referenceDate);
-  const weekData = getWeekData(weekDates);
+
+  useEffect(() => {
+    const dates = getWeekDates(referenceDate);
+    fetch(`/api/planning/week?dates=${dates.join(',')}`)
+      .then(r => r.json())
+      .then(setWeekData)
+      .catch(() => setWeekData(new Array(7).fill(null)));
+  }, [referenceDate]);
 
   function prev() { setReferenceDate(d => addWeeks(d, -1)); }
   function next() { setReferenceDate(d => addWeeks(d, 1)); }

@@ -1,14 +1,14 @@
 'use client';
 
-import { use } from 'react';
+import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { TrainingBlock } from '@/components/planning/TrainingBlock';
 import { NutritionBlock } from '@/components/planning/NutritionBlock';
 import { MenuBlock } from '@/components/planning/MenuBlock';
 import { useRole } from '@/context/RoleContext';
-import { getDayData } from '@/lib/mock-data';
-import { formatDate, addWeeks, ROLE_CONFIGS } from '@/lib/utils';
+import { formatDate, ROLE_CONFIGS } from '@/lib/utils';
+import { DayData } from '@/types';
 
 interface DayPageProps {
   params: Promise<{ date: string }>;
@@ -17,7 +17,14 @@ interface DayPageProps {
 export default function DayPage({ params }: DayPageProps) {
   const { date } = use(params);
   const { role } = useRole();
-  const data = getDayData(date);
+  const [data, setData] = useState<DayData | null | undefined>(undefined);
+
+  useEffect(() => {
+    fetch(`/api/planning/day/${date}`)
+      .then(r => r.json())
+      .then(setData)
+      .catch(() => setData(null));
+  }, [date]);
 
   if (!role) {
     return (
@@ -73,7 +80,13 @@ export default function DayPage({ params }: DayPageProps) {
         </Link>
       </div>
 
-      {!data ? (
+      {data === undefined ? (
+        <div className="flex flex-col gap-4 animate-pulse">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="h-32 bg-slate-200 rounded-2xl" />
+          ))}
+        </div>
+      ) : !data ? (
         <div className="text-center py-16">
           <span className="text-5xl">📭</span>
           <p className="mt-4 text-slate-500">Aucune donnée pour cette journée</p>
