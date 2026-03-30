@@ -2,12 +2,12 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 
-// Priorité : DATABASE_URL, puis les variables Supabase marketplace
+// Priorité : variables Supabase marketplace (Supavisor), puis DATABASE_URL classique
 const rawUrl =
-  process.env.DATABASE_URL ??
   process.env.POSTGRES_PRISMA_URL ??
   process.env.POSTGRES_URL ??
   process.env.POSTGRES_URL_NON_POOLING ??
+  process.env.DATABASE_URL ??
   '';
 
 // Supprime sslmode= de l'URL pour qu'on puisse le gérer via l'option ssl
