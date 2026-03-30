@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
-// Supporte les noms de variables Vercel/Supabase marketplace et la variable classique
+// DATABASE_URL en priorité, puis fallback sur les variables Supabase marketplace
 const connectionString =
-  process.env.POSTGRES_URL_NON_POOLING ??
+  process.env.DATABASE_URL ??
   process.env.POSTGRES_PRISMA_URL ??
   process.env.POSTGRES_URL ??
-  process.env.DATABASE_URL ??
+  process.env.POSTGRES_URL_NON_POOLING ??
   '';
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
