@@ -138,6 +138,12 @@ export function formatMonthYear(year: number, month: number): string {
   });
 }
 
+/** Retourne la date locale au format YYYY-MM-DD sans décalage UTC */
+function localDateISO(d: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 export function getWeekDates(referenceDate?: string): string[] {
   const ref = referenceDate ? new Date(referenceDate + 'T00:00:00') : new Date();
   const day = ref.getDay();
@@ -147,14 +153,14 @@ export function getWeekDates(referenceDate?: string): string[] {
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
-    return d.toISOString().split('T')[0];
+    return localDateISO(d);
   });
 }
 
 export function addWeeks(date: string, weeks: number): string {
   const d = new Date(date + 'T00:00:00');
   d.setDate(d.getDate() + weeks * 7);
-  return d.toISOString().split('T')[0];
+  return localDateISO(d);
 }
 
 export function getMonthGrid(year: number, month: number): (string | null)[][] {
@@ -167,8 +173,8 @@ export function getMonthGrid(year: number, month: number): (string | null)[][] {
   let week: (string | null)[] = Array(startOffset).fill(null);
 
   for (let d = 1; d <= lastDay.getDate(); d++) {
-    const date = new Date(year, month, d);
-    week.push(date.toISOString().split('T')[0]);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    week.push(`${year}-${pad(month + 1)}-${pad(d)}`);
     if (week.length === 7) {
       weeks.push(week);
       week = [];
@@ -182,9 +188,9 @@ export function getMonthGrid(year: number, month: number): (string | null)[][] {
 }
 
 export function isToday(date: string): boolean {
-  return date === new Date().toISOString().split('T')[0];
+  return date === localDateISO(new Date());
 }
 
 export function todayISO(): string {
-  return new Date().toISOString().split('T')[0];
+  return localDateISO(new Date());
 }
