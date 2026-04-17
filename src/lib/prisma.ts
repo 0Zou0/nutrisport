@@ -10,8 +10,18 @@ const rawUrl =
   process.env.DATABASE_URL ??
   '';
 
+// Extrait le project reference depuis options=reference=PROJECT_REF (Supavisor)
+const _refMatch   = rawUrl.match(/[?&]options=([^&]*)/);
+const _optsDec    = _refMatch ? decodeURIComponent(_refMatch[1]) : '';
+const _projectRef = _optsDec.match(/reference=([^&\s]+)/)?.[1] ?? '';
+
+// Supavisor exige username=postgres.PROJECT_REF pour identifier le tenant
+const _fixedUrl = _projectRef
+  ? rawUrl.replace(/^(postgres(?:ql)?:\/\/)(postgres)(:)/, `$1postgres.${_projectRef}$3`)
+  : rawUrl;
+
 // Supprime sslmode= de l'URL pour qu'on puisse le gérer via l'option ssl
-const connectionString = rawUrl.replace(/[?&]sslmode=[^&]*/g, (m, offset, str) => {
+const connectionString = _fixedUrl.replace(/[?&]sslmode=[^&]*/g, (m, offset, str) => {
   const isFirst = str[offset] === '?';
   return isFirst ? '?' : '';
 }).replace(/\?$/, '');
