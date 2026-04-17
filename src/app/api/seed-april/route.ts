@@ -9,23 +9,25 @@ export async function GET() {
   const optionsDecoded = refMatch ? decodeURIComponent(refMatch[1]) : '';
   const projectRef = optionsDecoded.match(/reference=([^&\s]+)/)?.[1] ?? '';
 
-  const results: Record<string, string> = {
-    projectRef,
-    snameAttempted: projectRef ? `${projectRef}.pooler.supabase.com` : 'none',
-  };
-
   if (!projectRef) {
-    results.error = 'No project ref found in options';
-    return NextResponse.json(results);
+    return NextResponse.json({ error: 'No project ref found in options' });
   }
 
-  // Test avec servername SNI = project-specific hostname
+  // Supavisor attend username=postgres.PROJECT_REF pour identifier le tenant
+  // On transforme l'URL: postgres://postgres:PASS → postgres://postgres.PROJECT_REF:PASS
+  const fixedUrl = rawUrl.replace(
+    /^(postgres(?:ql)?:\/\/)(postgres)(:)/,
+    `$1postgres.${projectRef}$3`
+  );
+
+  const results: Record<string, string> = {
+    projectRef,
+    usernameFixed: fixedUrl.match(/\/\/([^:]+):/)?.[1] ?? 'unknown',
+  };
+
   const pool = new Pool({
-    connectionString: rawUrl,
-    ssl: {
-      rejectUnauthorized: false,
-      servername: `${projectRef}.pooler.supabase.com`,
-    },
+    connectionString: fixedUrl,
+    ssl: { rejectUnauthorized: false },
   });
 
   try {
