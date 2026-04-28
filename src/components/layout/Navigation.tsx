@@ -13,13 +13,44 @@ const NAV_ITEMS = [
 
 export function Navigation() {
   const pathname = usePathname();
-  const { role } = useRole();
+  const { role, user, signOut } = useRole();
   const config = role ? ROLE_CONFIGS[role] : null;
 
   const bgActive = config?.bgColor ?? 'bg-blue-600';
 
   return (
     <nav className="bg-slate-900/95 backdrop-blur border-b border-white/5" aria-label="Navigation principale">
+      {/* Barre utilisateur */}
+      <div className="max-w-5xl mx-auto px-3 pt-2 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-base">🏉</span>
+          <span className="text-white text-xs font-bold tracking-tight">NutriSport</span>
+          {config && (
+            <span className="ml-1 text-xs text-slate-400 font-medium">
+              — {config.icon} {config.label}
+            </span>
+          )}
+        </div>
+        {user && (
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400 text-xs hidden sm:block truncate max-w-[160px]">
+              {user.name || user.email}
+            </span>
+            <button
+              onClick={signOut}
+              className="flex items-center gap-1 text-xs text-slate-400 hover:text-red-400 transition-colors px-2 py-1 rounded-lg hover:bg-red-500/10"
+              title="Se déconnecter"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+              </svg>
+              <span className="hidden sm:inline">Déconnexion</span>
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Onglets de navigation */}
       <div className="max-w-5xl mx-auto px-3">
         <ul className="flex gap-2 py-2.5" role="list">
           {NAV_ITEMS.map(({ label, href, icon }) => {
