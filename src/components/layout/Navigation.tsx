@@ -32,6 +32,7 @@ export function Navigation() {
               <li key={label} className="flex-1">
                 <Link
                   href={to}
+                  prefetch={false}
                   className={`
                     relative flex flex-col items-center gap-0.5 w-full px-2 py-2 rounded-xl text-xs font-semibold
                     transition-all duration-200 select-none
