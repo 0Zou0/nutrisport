@@ -207,6 +207,8 @@ export function MenuBlock({ menu: initialMenu, role, date, detailHref }: MenuBlo
           ...prev,
           [section]: [...prev[section], newOption],
         }));
+        // Ouvre directement le picker pour choisir une recette
+        setPickerContext({ section, optionId: newOption.id });
       }
     } finally {
       setAddingSection(null);
