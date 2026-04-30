@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { Recipe } from '@/types';
+import { Recipe, RecipeFormData } from '@/types';
 import type {
   Recipe as PrismaRecipe, Ingredient, RecipeStep,
   NutritionFacts, RecipeTag, RecipeOrientation,
@@ -95,4 +95,88 @@ export async function getRecipesByClub(clubId: string): Promise<Recipe[]> {
   });
 
   return recipes.map(r => mapRecipe(r as RecipeFull));
+}
+
+export async function createRecipe(data: RecipeFormData, clubId: string): Promise<Recipe> {
+  const r = await prisma.recipe.create({
+    data: {
+      title:       data.title,
+      description: data.description,
+      category:    data.category.toUpperCase() as PrismaRecipe['category'],
+      difficulty:  data.difficulty.toUpperCase() as PrismaRecipe['difficulty'],
+      prepTimeMin: data.prepTimeMin,
+      cookTimeMin: data.cookTimeMin,
+      servings:    data.servings,
+      clubId,
+      ingredients: {
+        create: data.ingredients.map((ing, i) => ({
+          name:      ing.name,
+          quantity:  ing.quantity,
+          unit:      ing.unit,
+          sortOrder: i,
+        })),
+      },
+      steps: {
+        create: data.steps.map((step, i) => ({
+          stepNumber:  i + 1,
+          instruction: step.instruction,
+          durationMin: step.durationMin,
+        })),
+      },
+    },
+    include: {
+      ingredients:  { orderBy: { sortOrder: 'asc' } },
+      steps:        { orderBy: { stepNumber: 'asc' } },
+      nutrition:    true,
+      tags:         true,
+      orientations: true,
+    },
+  });
+  return mapRecipe(r as RecipeFull);
+}
+
+export async function updateRecipe(id: string, data: RecipeFormData): Promise<Recipe> {
+  // Supprime les ingrédients et étapes existants, puis recrée
+  await prisma.ingredient.deleteMany({ where: { recipeId: id } });
+  await prisma.recipeStep.deleteMany({ where: { recipeId: id } });
+
+  const r = await prisma.recipe.update({
+    where: { id },
+    data: {
+      title:       data.title,
+      description: data.description,
+      category:    data.category.toUpperCase() as PrismaRecipe['category'],
+      difficulty:  data.difficulty.toUpperCase() as PrismaRecipe['difficulty'],
+      prepTimeMin: data.prepTimeMin,
+      cookTimeMin: data.cookTimeMin,
+      servings:    data.servings,
+      ingredients: {
+        create: data.ingredients.map((ing, i) => ({
+          name:      ing.name,
+          quantity:  ing.quantity,
+          unit:      ing.unit,
+          sortOrder: i,
+        })),
+      },
+      steps: {
+        create: data.steps.map((step, i) => ({
+          stepNumber:  i + 1,
+          instruction: step.instruction,
+          durationMin: step.durationMin,
+        })),
+      },
+    },
+    include: {
+      ingredients:  { orderBy: { sortOrder: 'asc' } },
+      steps:        { orderBy: { stepNumber: 'asc' } },
+      nutrition:    true,
+      tags:         true,
+      orientations: true,
+    },
+  });
+  return mapRecipe(r as RecipeFull);
+}
+
+export async function deleteRecipe(id: string): Promise<void> {
+  await prisma.recipe.delete({ where: { id } });
 }

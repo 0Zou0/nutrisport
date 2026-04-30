@@ -110,7 +110,7 @@ export default function DayPage({ params }: DayPageProps) {
             date={date}
             onRefresh={fetchData}
           />
-          <MenuBlock menu={data.menu} role={role} />
+          <MenuBlock menu={data.menu} role={role} date={date} />
         </div>
       )}
     </AppLayout>

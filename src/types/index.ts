@@ -49,7 +49,7 @@ export interface NutritionFacts {
 }
 
 export type RecipeDifficulty = 'easy' | 'medium' | 'hard';
-export type RecipeCategory = 'starter' | 'main';
+export type RecipeCategory = 'starter' | 'main' | 'dessert';
 
 export interface Recipe {
   id: string;
@@ -65,6 +65,31 @@ export interface Recipe {
   nutrition: NutritionFacts;
   tags: string[];
   orientations: NutritionalOrientation[];
+}
+
+export interface IngredientInput {
+  _key: string;
+  name: string;
+  quantity: number;
+  unit: string;
+}
+
+export interface StepInput {
+  _key: string;
+  instruction: string;
+  durationMin?: number;
+}
+
+export interface RecipeFormData {
+  title: string;
+  description: string;
+  category: RecipeCategory;
+  difficulty: RecipeDifficulty;
+  prepTimeMin: number;
+  cookTimeMin: number;
+  servings: number;
+  ingredients: IngredientInput[];
+  steps: StepInput[];
 }
 
 export interface DayMenu {

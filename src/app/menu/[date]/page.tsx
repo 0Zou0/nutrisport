@@ -50,7 +50,7 @@ export default function MenuPage({ params }: MenuPageProps) {
       ) : (
         <div className="flex flex-col gap-4">
           <NutritionBlock orientations={data.orientations} role={role} />
-          <MenuBlock menu={data.menu} role={role} />
+          <MenuBlock menu={data.menu} role={role} date={date} />
         </div>
       )}
     </AppLayout>

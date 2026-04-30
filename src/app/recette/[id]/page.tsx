@@ -24,7 +24,7 @@ const DIFFICULTY_COLORS: Record<RecipeDifficulty, string> = {
   hard: 'bg-red-100 text-red-700',
 };
 
-const CATEGORY_LABELS = { starter: 'Entrée', main: 'Plat principal' };
+const CATEGORY_LABELS: Record<string, string> = { starter: 'Entrée', main: 'Plat principal', dessert: 'Dessert' };
 
 export default function RecipePage({ params }: RecipePageProps) {
   const { id } = use(params);
