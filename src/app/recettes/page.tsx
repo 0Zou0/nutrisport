@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useRole } from '@/context/RoleContext';
 import { Recipe, RecipeFormData, RecipeCategory } from '@/types';
 import { RecipeCard } from '@/components/recipes/RecipeCard';
 import { RecipeFormModal } from '@/components/recipes/RecipeFormModal';
+import { todayISO } from '@/lib/utils';
 
 const CATEGORY_FILTERS: Array<{ label: string; value: RecipeCategory | 'all' }> = [
   { label: 'Toutes',   value: 'all' },
@@ -97,9 +99,21 @@ export default function RecettesPage() {
     <div className="max-w-5xl mx-auto px-4 py-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-800">Mes recettes</h1>
-          <p className="text-sm text-slate-500 mt-0.5">{recipes.length} recette{recipes.length !== 1 ? 's' : ''} dans votre bibliothèque</p>
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/planning/jour/${todayISO()}`}
+            prefetch={false}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Planning
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-slate-800">Mes recettes</h1>
+            <p className="text-sm text-slate-500 mt-0.5">{recipes.length} recette{recipes.length !== 1 ? 's' : ''} dans votre bibliothèque</p>
+          </div>
         </div>
         <button
           onClick={openCreate}
