@@ -1,11 +1,13 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useRole } from '@/context/RoleContext';
 import { ROLE_CONFIGS } from '@/lib/utils';
 
 export function Header() {
-  const { role, user, signOut } = useRole();
+  const router = useRouter();
+  const { role } = useRole();
   const config = role ? ROLE_CONFIGS[role] : null;
 
   return (
@@ -17,34 +19,21 @@ export function Header() {
           <span>NutriSport</span>
         </Link>
 
-        <div className="flex items-center gap-3">
-          {/* Rôle actif */}
-          {config && (
+        {/* Rôle actif */}
+        {config && (
+          <div className="flex items-center gap-2">
             <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold ${config.bgColor} text-white`}>
               <span>{config.icon}</span>
               <span className="hidden sm:inline">{config.label}</span>
             </span>
-          )}
-
-          {/* Utilisateur + déconnexion */}
-          {user && (
-            <div className="flex items-center gap-2">
-              <span className="text-slate-400 text-xs hidden sm:block truncate max-w-[140px]">
-                {user.name || user.email}
-              </span>
-              <button
-                onClick={signOut}
-                className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-red-400 transition-colors px-2 py-1.5 rounded-lg hover:bg-red-500/10"
-                title="Se déconnecter"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
-                </svg>
-                <span className="hidden sm:inline">Déconnexion</span>
-              </button>
-            </div>
-          )}
-        </div>
+            <button
+              onClick={() => router.push('/')}
+              className="text-xs text-slate-400 hover:text-white transition-colors px-2 py-1 rounded hover:bg-slate-700"
+            >
+              Changer
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );
