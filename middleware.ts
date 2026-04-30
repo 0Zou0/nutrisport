@@ -25,23 +25,11 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Rafraîchit la session si expirée — IMPORTANT : ne pas supprimer
-  const { data: { user } } = await supabase.auth.getUser();
+  // Rafraîchit la session si expirée (ne pas supprimer)
+  await supabase.auth.getUser();
 
-  const { pathname } = request.nextUrl;
-
-  // Routes publiques : /login et les API routes d'auth
-  const isPublic =
-    pathname.startsWith('/login') ||
-    pathname.startsWith('/api/auth') ||
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/favicon');
-
-  if (!user && !isPublic) {
-    const loginUrl = request.nextUrl.clone();
-    loginUrl.pathname = '/login';
-    return NextResponse.redirect(loginUrl);
-  }
+  // La protection des routes est gérée côté client via RoleContext
+  // pour éviter les boucles de redirections avec les navigations Next.js
 
   return supabaseResponse;
 }

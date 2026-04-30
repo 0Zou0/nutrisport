@@ -34,6 +34,10 @@ export function RoleProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         setLoading(false);
+        // Redirige vers /login si pas de session (protection client-side)
+        if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+          window.location.href = '/login';
+        }
         return;
       }
       fetch('/api/auth/me', {
