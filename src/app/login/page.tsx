@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase-client';
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -28,8 +26,8 @@ export default function LoginPage() {
       return;
     }
 
-    router.push('/');
-    router.refresh();
+    // Full reload pour que le middleware synchronise les cookies de session
+    window.location.href = '/';
   }
 
   return (

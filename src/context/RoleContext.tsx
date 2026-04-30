@@ -30,13 +30,22 @@ export function RoleProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/auth/me')
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data && data.role) setUser(data);
+    const supabase = createSupabaseBrowserClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        setLoading(false);
+        return;
+      }
+      fetch('/api/auth/me', {
+        headers: { Authorization: `Bearer ${session.access_token}` },
       })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && data.role) setUser(data);
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    });
   }, []);
 
   async function signOut() {
