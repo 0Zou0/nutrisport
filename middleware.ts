@@ -1,44 +1,14 @@
-import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request });
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          supabaseResponse = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
-        },
-      },
-    }
-  );
-
-  // Rafraîchit la session si expirée (ne pas supprimer)
-  await supabase.auth.getUser();
-
-  // La protection des routes est gérée côté client via RoleContext
-  // pour éviter les boucles de redirections avec les navigations Next.js
-
-  return supabaseResponse;
+// Le middleware laisse passer toutes les requêtes.
+// La protection des routes est gérée côté client via RoleContext
+// (redirect vers /login si pas de session Supabase).
+export function middleware(request: NextRequest) {
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    /*
-     * Toutes les routes sauf les fichiers statiques Next.js
-     */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
