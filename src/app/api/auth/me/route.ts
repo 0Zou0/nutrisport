@@ -39,7 +39,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Utilisateur introuvable en base' }, { status: 404 });
     }
 
-    return NextResponse.json(dbUser);
+    return NextResponse.json({
+      ...dbUser,
+      role: dbUser.role.toLowerCase(),
+    });
   } catch (err) {
     console.error('[/api/auth/me]', err);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
