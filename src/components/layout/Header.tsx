@@ -18,31 +18,31 @@ export function Header() {
         </Link>
 
         <div className="flex items-center gap-3">
-          {/* Badge rôle */}
-          {config && (
-            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold ${config.bgColor} text-white`}>
-              <span>{config.icon}</span>
-              <span className="hidden sm:inline">{config.label}</span>
-            </span>
-          )}
-
-          {/* Nom + bouton déconnexion */}
-          {user && (
+          {/* Nom + badge rôle */}
+          {user && config && (
             <div className="flex items-center gap-2">
-              <span className="text-slate-400 text-xs hidden sm:block truncate max-w-[140px]">
+              <span className="text-white text-sm font-medium hidden sm:block truncate max-w-[140px]">
                 {user.name || user.email}
               </span>
-              <button
-                onClick={signOut}
-                className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-red-400 transition-colors px-2 py-1.5 rounded-lg hover:bg-red-500/10"
-                title="Se déconnecter"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
-                </svg>
-                <span className="hidden sm:inline">Déconnexion</span>
-              </button>
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold ${config.bgColor} text-white`}>
+                <span>{config.icon}</span>
+                <span className="hidden sm:inline">{config.label}</span>
+              </span>
             </div>
+          )}
+
+          {/* Bouton déconnexion */}
+          {user && (
+            <button
+              onClick={signOut}
+              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-red-400 transition-colors px-2 py-1.5 rounded-lg hover:bg-red-500/10"
+              title="Se déconnecter"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+              </svg>
+              <span className="hidden sm:inline">Déconnexion</span>
+            </button>
           )}
         </div>
       </div>
