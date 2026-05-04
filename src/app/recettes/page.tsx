@@ -115,7 +115,7 @@ export default function RecettesPage() {
       </div>
 
       {/* Header */}
-      <div className="flex items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Mes recettes</h1>
           <p className="text-sm text-slate-500 mt-0.5">{recipes.length} recette{recipes.length !== 1 ? 's' : ''} dans votre bibliothèque</p>
@@ -132,23 +132,23 @@ export default function RecettesPage() {
       </div>
 
       {/* Filtres */}
-      <div className="flex flex-wrap gap-3 mb-6 items-center">
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <input
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Rechercher…"
-          className="flex-1 min-w-[180px] px-3 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+          className="flex-1 px-3 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
         />
-        <div className="flex gap-2 shrink-0">
+        <div className="flex gap-2">
           {CATEGORY_FILTERS.map(f => (
             <button
               key={f.value}
               onClick={() => setCategory(f.value)}
-              className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors border whitespace-nowrap ${
+              className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
                 category === f.value
-                  ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
-                  : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
             >
               {f.label}
