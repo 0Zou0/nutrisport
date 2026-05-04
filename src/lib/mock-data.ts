@@ -12,6 +12,7 @@ const WEEK_MENUS = {
       { id: 'std-m2', title: 'Saumon grillé riz complet', description: 'Pavé de saumon, riz complet, brocolis vapeur', available: true, recipeId: 'std-m2' },
       { id: 'std-m3', title: 'Pâtes bolognaise sport', description: 'Pâtes semi-complètes, bœuf haché maigre, tomates fraîches', available: true, recipeId: 'std-m3' },
     ],
+    desserts: [],
   },
   antiInflam: {
     starters: [
@@ -24,6 +25,7 @@ const WEEK_MENUS = {
       { id: 'ai-m2', title: 'Poulet curcuma légumes colorés', description: 'Poulet mariné curcuma-gingembre, légumes colorés', available: true, recipeId: 'ai-m2' },
       { id: 'ai-m3', title: 'Bowl végétarien complet', description: 'Pois chiches rôtis, patate douce, chou rouge, tahini', available: true, recipeId: 'ai-m3' },
     ],
+    desserts: [],
   },
   matchDay: {
     starters: [
@@ -36,6 +38,7 @@ const WEEK_MENUS = {
       { id: 'md-m2', title: 'Risotto jambon herbes', description: 'Riz arborio, jambon blanc, parmesan léger, herbes', available: true, recipeId: 'md-m2' },
       { id: 'md-m3', title: 'Burger sport maison', description: 'Pain complet, steak haché 5% MG, légumes, sauce yaourt', available: true, recipeId: 'md-m3' },
     ],
+    desserts: [],
   },
 };
 

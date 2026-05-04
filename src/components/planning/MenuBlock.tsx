@@ -129,14 +129,14 @@ function MenuOptionCard({ option, canToggle, isCook, saving, onToggle, onPickRec
 export function MenuBlock({ menu: initialMenu, role, date, detailHref }: MenuBlockProps) {
   const [menu, setMenu] = useState<DayMenu>(initialMenu);
   const [saving, setSaving] = useState<string | null>(null);
-  const [addingSection, setAddingSection] = useState<'starters' | 'mains' | null>(null);
-  const [pickerContext, setPickerContext] = useState<{ section: 'starters' | 'mains'; optionId: string } | null>(null);
+  const [addingSection, setAddingSection] = useState<'starters' | 'mains' | 'desserts' | null>(null);
+  const [pickerContext, setPickerContext] = useState<{ section: 'starters' | 'mains' | 'desserts'; optionId: string } | null>(null);
 
   const canToggleAvailability = canEdit(role, 'menu-availability');
   const canEditTitle = canEdit(role, 'menu-title');
   const isCook = role === 'cook';
 
-  async function toggleOption(section: 'starters' | 'mains', id: string) {
+  async function toggleOption(section: 'starters' | 'mains' | 'desserts', id: string) {
     const current = menu[section].find(o => o.id === id);
     if (!current) return;
     const newAvailable = !current.available;
@@ -167,7 +167,7 @@ export function MenuBlock({ menu: initialMenu, role, date, detailHref }: MenuBlo
     }
   }
 
-  async function assignRecipe(section: 'starters' | 'mains', optionId: string, recipe: Recipe) {
+  async function assignRecipe(section: 'starters' | 'mains' | 'desserts', optionId: string, recipe: Recipe) {
     setSaving(optionId);
     try {
       const res = await fetch(`/api/menu-option/${optionId}`, {
@@ -191,10 +191,10 @@ export function MenuBlock({ menu: initialMenu, role, date, detailHref }: MenuBlo
     }
   }
 
-  async function addSlot(section: 'starters' | 'mains') {
+  async function addSlot(section: 'starters' | 'mains' | 'desserts') {
     if (!date) return;
     setAddingSection(section);
-    const category = section === 'starters' ? 'STARTER' : 'MAIN';
+    const category = section === 'starters' ? 'STARTER' : section === 'mains' ? 'MAIN' : 'DESSERT';
     try {
       const res = await fetch('/api/menu-option', {
         method: 'POST',
@@ -213,7 +213,7 @@ export function MenuBlock({ menu: initialMenu, role, date, detailHref }: MenuBlo
     }
   }
 
-  async function removeSlot(section: 'starters' | 'mains', id: string) {
+  async function removeSlot(section: 'starters' | 'mains' | 'desserts', id: string) {
     setSaving(id);
     try {
       const res = await fetch(`/api/menu-option/${id}`, { method: 'DELETE' });
@@ -340,6 +340,47 @@ export function MenuBlock({ menu: initialMenu, role, date, detailHref }: MenuBlo
                   onToggle={() => toggleOption('mains', opt.id)}
                   onPickRecipe={() => setPickerContext({ section: 'mains', optionId: opt.id })}
                   onRemove={() => removeSlot('mains', opt.id)}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-slate-200" />
+
+          {/* Desserts */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wide">Desserts</h3>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-slate-400">
+                  {menu.desserts.filter(o => o.available).length}/{menu.desserts.length} disponible{menu.desserts.filter(o => o.available).length > 1 ? 's' : ''}
+                </span>
+                {isCook && date && (
+                  <button
+                    onClick={() => addSlot('desserts')}
+                    disabled={addingSection === 'desserts'}
+                    title="Ajouter un slot dessert"
+                    className="w-6 h-6 rounded-full bg-slate-100 text-slate-500 hover:bg-blue-100 hover:text-blue-600 flex items-center justify-center transition-colors text-lg leading-none disabled:opacity-50"
+                  >
+                    +
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              {menu.desserts.length === 0 && (
+                <p className="text-xs text-slate-400 italic py-1">Aucun dessert — {isCook ? 'cliquez sur + pour en ajouter' : 'aucun pour ce jour'}</p>
+              )}
+              {menu.desserts.map((opt) => (
+                <MenuOptionCard
+                  key={opt.id}
+                  option={opt}
+                  canToggle={canToggleAvailability}
+                  isCook={isCook}
+                  saving={saving === opt.id}
+                  onToggle={() => toggleOption('desserts', opt.id)}
+                  onPickRecipe={() => setPickerContext({ section: 'desserts', optionId: opt.id })}
+                  onRemove={() => removeSlot('desserts', opt.id)}
                 />
               ))}
             </div>

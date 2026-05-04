@@ -95,6 +95,7 @@ export interface RecipeFormData {
 export interface DayMenu {
   starters: MenuOption[];
   mains: MenuOption[];
+  desserts: MenuOption[];
 }
 
 export interface DayData {

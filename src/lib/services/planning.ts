@@ -44,7 +44,7 @@ function mapDayPlan(date: string, dayPlan: DayPlanFull): DayData {
     (o: DayOrientation) => ORIENTATION_MAP[o.orientation]
   );
 
-  const menu: DayMenu = { starters: [], mains: [] };
+  const menu: DayMenu = { starters: [], mains: [], desserts: [] };
   if (dayPlan.menu) {
     for (const opt of dayPlan.menu.options) {
       const item: MenuOption = {
@@ -54,8 +54,9 @@ function mapDayPlan(date: string, dayPlan: DayPlanFull): DayData {
         available:   opt.available,
         recipeId:    opt.recipeId ?? undefined,
       };
-      if (opt.category === 'STARTER') menu.starters.push(item);
-      else if (opt.category === 'MAIN') menu.mains.push(item);
+      if (opt.category === 'STARTER')      menu.starters.push(item);
+      else if (opt.category === 'MAIN')    menu.mains.push(item);
+      else if (opt.category === 'DESSERT') menu.desserts.push(item);
     }
   }
 
