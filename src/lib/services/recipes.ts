@@ -16,8 +16,8 @@ type RecipeFull = PrismaRecipe & {
 const DIFFICULTY_MAP: Record<string, 'easy' | 'medium' | 'hard'> = {
   EASY: 'easy', MEDIUM: 'medium', HARD: 'hard',
 };
-const CATEGORY_MAP: Record<string, 'starter' | 'main'> = {
-  STARTER: 'starter', MAIN: 'main', DESSERT: 'main',
+const CATEGORY_MAP: Record<string, 'starter' | 'main' | 'dessert'> = {
+  STARTER: 'starter', MAIN: 'main', DESSERT: 'dessert',
 };
 const ORIENTATION_MAP: Record<string, string> = {
   ANTI_INFLAM:    'ANTI-INFLAM',
