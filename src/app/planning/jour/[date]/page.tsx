@@ -45,14 +45,14 @@ export default function DayPage({ params }: DayPageProps) {
 
   const config = ROLE_CONFIGS[role];
   const prevDate = (() => {
-    const d = new Date(date + 'T00:00:00');
-    d.setDate(d.getDate() - 1);
-    return d.toISOString().split('T')[0];
+    const [y, m, d] = date.split('-').map(Number);
+    const dt = new Date(Date.UTC(y, m - 1, d - 1));
+    return dt.toISOString().split('T')[0];
   })();
   const nextDate = (() => {
-    const d = new Date(date + 'T00:00:00');
-    d.setDate(d.getDate() + 1);
-    return d.toISOString().split('T')[0];
+    const [y, m, d] = date.split('-').map(Number);
+    const dt = new Date(Date.UTC(y, m - 1, d + 1));
+    return dt.toISOString().split('T')[0];
   })();
 
   return (
