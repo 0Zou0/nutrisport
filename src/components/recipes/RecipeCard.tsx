@@ -33,7 +33,7 @@ export function RecipeCard({ recipe, onEdit, onDelete }: RecipeCardProps) {
   const totalTime = recipe.prepTime + recipe.cookTime;
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow h-full">
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-semibold text-slate-800 text-base leading-tight">{recipe.title}</h3>
         <div className="flex gap-1 shrink-0">
@@ -58,9 +58,9 @@ export function RecipeCard({ recipe, onEdit, onDelete }: RecipeCardProps) {
         </div>
       </div>
 
-      {recipe.description && (
-        <p className="text-xs text-slate-500 line-clamp-2">{recipe.description}</p>
-      )}
+      <p className="text-xs text-slate-500 line-clamp-2 min-h-[2.5rem]">
+        {recipe.description || <span className="text-slate-300 italic">Aucune description</span>}
+      </p>
 
       <div className="flex flex-wrap gap-1.5">
         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${CATEGORY_COLORS[recipe.category]}`}>
