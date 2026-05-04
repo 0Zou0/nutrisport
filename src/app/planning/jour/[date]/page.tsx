@@ -16,7 +16,7 @@ interface DayPageProps {
 
 export default function DayPage({ params }: DayPageProps) {
   const { date } = use(params);
-  const { role } = useRole();
+  const { role, loading: roleLoading } = useRole();
   const [data, setData] = useState<DayData | null | undefined>(undefined);
 
   function fetchData() {
@@ -28,13 +28,17 @@ export default function DayPage({ params }: DayPageProps) {
 
   useEffect(() => { fetchData(); }, [date]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!role) {
+  if (roleLoading || !role) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-950">
-        <div className="text-center">
-          <p className="text-slate-400 mb-4">Sélectionnez votre rôle pour continuer</p>
-          <Link href="/" className="text-white underline">Retour à l&apos;accueil</Link>
-        </div>
+        {roleLoading ? (
+          <div className="w-7 h-7 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <div className="text-center">
+            <p className="text-slate-400 mb-4">Sélectionnez votre rôle pour continuer</p>
+            <Link href="/" className="text-white underline">Retour à l&apos;accueil</Link>
+          </div>
+        )}
       </div>
     );
   }
@@ -58,6 +62,7 @@ export default function DayPage({ params }: DayPageProps) {
         <Link
           href={`/planning/jour/${prevDate}`}
           aria-label="Jour précédent"
+          prefetch={false}
           className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors"
         >
           <svg className="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -74,6 +79,7 @@ export default function DayPage({ params }: DayPageProps) {
         <Link
           href={`/planning/jour/${nextDate}`}
           aria-label="Jour suivant"
+          prefetch={false}
           className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors"
         >
           <svg className="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
